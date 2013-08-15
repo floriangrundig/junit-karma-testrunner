@@ -1,0 +1,1 @@
+Junit Testrunner implementation for running karma tests in JUnit context.
