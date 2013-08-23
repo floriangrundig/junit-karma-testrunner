@@ -14,18 +14,18 @@ module.exports = function (config) {
         ],
 
         //  export PHANTOMJS_BIN=/Users/florian/opt/phantomjs-1.8.1-macosx/bin/phantomjs
-        browsers: ['PhantomJS', 'Chrome'],
+        browsers: ['PhantomJS'],
         reporters: ['progress', 'junit', 'coverage', 'remote'],
         frameworks: ["jasmine"],
-        autoWatch: true,
-        singleRun: false,
+        autoWatch: false,
+        singleRun: true,
         junitReporter: {
             outputFile: 'target/test_out/unit.xml',
             suite: 'unit'
         },
         remoteReporter: {
             host: 'localhost',
-            port: '9000'
+            port: '9876'
         },
         plugins: [
             'karma-jasmine',

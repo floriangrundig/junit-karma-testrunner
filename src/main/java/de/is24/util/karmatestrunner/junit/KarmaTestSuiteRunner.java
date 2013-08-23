@@ -1,153 +1,200 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.    
- */
-
 package de.is24.util.karmatestrunner.junit;
 
 import de.is24.util.karmatestrunner.JSTestExecutionServer;
-import de.is24.util.karmatestrunner.jetty.ResultReceiverServer;
 import org.junit.runner.Description;
-import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerScheduler;
 import org.junit.runners.model.Statement;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * The KarmaTestSuiteRunner executes javascript test with karma and displays the results in ide using standard junit runnotifiers.
+ * The KarmaTestSuiteRunner does not produce a junit report file or something like that.
+ *
+ *
+ * Use the KarmaProcessBuilderArgs annotation to configure how to start karma (defaults to {"karma", "start"}.
+ * Use the KarmaConfigPath annotation to configure the path to the karma config file (defaults to "karma.conf").
+ * Use the KarmaRemoteServerPort annotation to configure the port of the server which receives the test results from karma.
+ */
 public class KarmaTestSuiteRunner extends ParentRunner<String> {
 
-    private RunnerScheduler fScheduler = new RunnerScheduler() {
-        public void schedule(Runnable childStatement) {
-            childStatement.run();
-        }
+  /**
+   * Describes the process builder arguments to start karma. Defaults to ["karma", "start"]
+   */
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.TYPE)
+  @Inherited
+  public @interface KarmaProcessBuilderArgs {
+    String[] value();
+  }
 
-        public void finished() {
-            // do nothing
+  /**
+   * Describes the karma config path used by the test results server. Defaults to
+   * "karma.conf".
+   */
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.TYPE)
+  @Inherited
+  public @interface KarmaConfigPath {
+    String value();
+  }
+
+  /**
+   * Describes the remote server port which karma reports the test result to. Defaults to 9876.
+   */
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.TYPE)
+  @Inherited
+  public @interface KarmaRemoteServerPort {
+    int value();
+  }
+
+
+  private RunnerScheduler fScheduler = new RunnerScheduler() {
+    public void schedule(Runnable childStatement) {
+      childStatement.run();
+    }
+
+    public void finished() {
+      // do nothing
+    }
+  };
+
+  private JSTestExecutionServer jsTestExecutionServer;
+
+
+  public KarmaTestSuiteRunner(Class<?> testClass) throws InitializationError {
+    super(testClass);
+
+    KarmaProcessBuilderArgs karmaProcessBuilderArgsAnnotation = testClass.getAnnotation(KarmaProcessBuilderArgs.class);
+    ArrayList<String> karmaProcessBuilderArgs;
+    if (karmaProcessBuilderArgsAnnotation == null) {
+      karmaProcessBuilderArgs = new ArrayList<String>(Arrays.asList("karma", "start")); // defaults
+    } else {
+      karmaProcessBuilderArgs = new ArrayList<String>(Arrays.asList(karmaProcessBuilderArgsAnnotation.value()));
+    }
+
+    KarmaConfigPath karmaConfigPathAnnotation = testClass.getAnnotation(KarmaConfigPath.class);
+    String karmaConfigPath;
+    if (karmaConfigPathAnnotation == null) {
+      karmaConfigPath = "karma.conf";
+    } else {
+      karmaConfigPath = karmaConfigPathAnnotation.value();
+    }
+
+    KarmaRemoteServerPort karmaRemoteServerPortAnnotation = testClass.getAnnotation(KarmaRemoteServerPort.class);
+    int karmaRemoteServerPort;
+    if (karmaRemoteServerPortAnnotation == null) {
+      karmaRemoteServerPort = 9876;
+    } else {
+      karmaRemoteServerPort = karmaRemoteServerPortAnnotation.value();
+    }
+
+    karmaProcessBuilderArgs.add(karmaConfigPath);
+
+    jsTestExecutionServer = new JSTestExecutionServer(karmaRemoteServerPort);
+    jsTestExecutionServer.setKarmaStartCmd((String[]) karmaProcessBuilderArgs.toArray(new String[0]));
+  }
+
+
+  /**
+   * Clean up our test environment.
+   *
+   * @param statement the statement we should append to.
+   * @return the appended statement.
+   */
+  private Statement afterTests(final Statement statement) {
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+        try {
+          jsTestExecutionServer.afterTests();
+          // Evaluate all that comes before this point.
+          statement.evaluate();
+        } finally {
+          // nop
         }
+      }
     };
+  }
 
-    private JSTestExecutionServer jsTestExecutionServer;
+  /**
+   * Establish our test environment.
+   *
+   * @param statement the statement to prepend.
+   * @return the prepended statement.
+   */
+  private Statement beforeTests(final Statement statement) {
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+        jsTestExecutionServer.beforeTests();
+        // Evaluate the remaining statements.
+        statement.evaluate();
+      }
+    };
+  }
 
-
-    public KarmaTestSuiteRunner(Class<?> testClass) throws InitializationError {
-        super(testClass);
-         jsTestExecutionServer = new JSTestExecutionServer(9000);
-        // TOOD replace with default cmd and annotation value
-        jsTestExecutionServer.setKarmaStartCmd("/bin/sh", "-c", "/Users/florian/IdeaProjects/gitClones/junit-karma-testrunner/karma_test_project/scripts/test.v0.9.x.sh");
-    }
-
-
-    /**
-     * Clean up our test environment.
-     *
-     * @param statement the statement we should append to.
-     * @return the appended statement.
-     */
-    private Statement afterTests(final Statement statement) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                try {
-                    jsTestExecutionServer.afterTests();
-                    // Evaluate all that comes before this point.
-                    statement.evaluate();
-                } finally {
-                    // nop
-                }
-            }
-        };
-    }
-
-    /**
-     * Establish our test environment.
-     *
-     * @param statement the statement to prepend.
-     * @return the prepended statement.
-     */
-    private Statement beforeTests(final Statement statement) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                jsTestExecutionServer.beforeTests();
-                // Evaluate the remaining statements.
-                statement.evaluate();
-            }
-        };
-    }
-
-    // TODO remove?
-    @Override
-    protected Statement classBlock(final RunNotifier notifier) {
-        Statement statement = super.classBlock(notifier);
-        statement = beforeTests(statement);
-        statement = afterTests(statement);
-        return statement;
-    }
+  @Override
+  protected Statement classBlock(final RunNotifier notifier) {
+    Statement statement = super.classBlock(notifier);
+    statement = beforeTests(statement);
+    statement = afterTests(statement);
+    return statement;
+  }
 
 
-    /**
-     * Returns a {@link Statement}: Call {@link #runChild(Object, RunNotifier)}
-     * on each object returned by {@link #getChildren()} (subject to any imposed
-     * filter and sort)
-     */
-    protected Statement childrenInvoker(final RunNotifier notifier) {
-        return new Statement() {
-            @Override
-            public void evaluate() {
-                runChildren(notifier);
-            }
-        };
-    }
+  /**
+   * Returns a {@link Statement}: Call {@link #runChild(Object, RunNotifier)}
+   * on each object returned by {@link #getChildren()} (subject to any imposed
+   * filter and sort)
+   */
+  protected Statement childrenInvoker(final RunNotifier notifier) {
+    return new Statement() {
+      @Override
+      public void evaluate() {
+        runChildren(notifier);
+      }
+    };
+  }
 
-    private void runChildren(final RunNotifier notifier) {
-        fScheduler.schedule(new Runnable() {
-            public void run() {
-                runChild(null, notifier);
-            }
-        });
-        fScheduler.finished();
-    }
+  private void runChildren(final RunNotifier notifier) {
+    fScheduler.schedule(new Runnable() {
+      public void run() {
+        runChild(null, notifier);
+      }
+    });
+    fScheduler.finished();
+  }
 
-    @Override
-    protected Description describeChild(String name) {
-        return Description
-                .createTestDescription(this.getTestClass().getJavaClass(),
-                        name);
-    }
+  @Override
+  protected Description describeChild(String name) {
+    return Description
+      .createTestDescription(this.getTestClass().getJavaClass(),
+        name);
+  }
 
-    @Override
-    protected List<String> getChildren() {
-        ArrayList<String> names = new ArrayList<String>();
-        return names;
-    }
+  @Override
+  protected List<String> getChildren() {
+    ArrayList<String> names = new ArrayList<String>();
+    return names;
+  }
 
 
-    @Override
-    protected void runChild(String name, RunNotifier notifier) {
-        jsTestExecutionServer.runTests(notifier);
-    }
+  @Override
+  protected void runChild(String name, RunNotifier notifier) {
+    jsTestExecutionServer.runTests(notifier);
+  }
 
 }

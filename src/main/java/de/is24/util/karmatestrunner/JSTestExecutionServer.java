@@ -55,7 +55,6 @@ public class JSTestExecutionServer {
 
         Process process;
         // Get the command args and execute them, merging STDOUT and STDERR
-        //ProcessBuilder builder = new ProcessBuilder("/usr/local/lib/node_modules/karma/bin/karma","start");
         ProcessBuilder builder = new ProcessBuilder(karma_start_cmds);
         builder.redirectErrorStream(true);
         builder.redirectOutput();
