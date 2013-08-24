@@ -1,6 +1,6 @@
 #JUnit-Karma test suite runner#
 This library allows you to run a karma test suite with a java JUnit test runner.
-###Preconditions###
+###Prerequisites###
 To combine the javascript karma test runner with a java JUnit runner you need this library and our
 <a href="http://github.com/ImmobilienScout24/karma-remote-reporter" target="_blank">karma-remote-reporter</a>.
 The karma-remote-reporter is a karma plugin which you can add easily in your "karma.conf":
@@ -36,7 +36,7 @@ module.exports = function (config) {
     });
 };
 </code></pre>
-To add the remote reporter plugin add 'karma-remote-reporter' to the plugin section and add 'remote' to the reporters section.
+To add the remote reporter plugin add 'karma-remote-reporter' to the plugin sections and add 'remote' to the reporters section.
 To configure the host and port where the karma remote reporter should send the test results use the remoteReporter section.
 
 The test results will send by the remote reporter to a server which is in the java world e.g. this JUnit-karma-testrunner.
