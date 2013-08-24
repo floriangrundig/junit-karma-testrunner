@@ -4,7 +4,6 @@ module.exports = function (config) {
         basePath: '../.',
         files: [
             'lib/angular/angular.js',
-            'lib/angular/angular.js',
             'lib/angular/angular-loader.js',
             'lib/angular/angular-resource.js',
             'lib/angular/angular-sanitize.js',
@@ -13,7 +12,6 @@ module.exports = function (config) {
             'unit-tests/**/*.js'
         ],
 
-        //  export PHANTOMJS_BIN=/Users/florian/opt/phantomjs-1.8.1-macosx/bin/phantomjs
         browsers: ['PhantomJS'],
         reporters: ['progress', 'junit', 'coverage', 'remote'],
         frameworks: ["jasmine"],
