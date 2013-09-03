@@ -1,0 +1,21 @@
+{
+  "name": "karma_test_project",
+  "version": "0.0.1",
+  "description": "A mini angular app for testing the junit-karma-runner",
+  "scripts": {
+    "test": "echo 'Error: no test specified' && exit 1"
+  },
+  "author": {
+    "name": "Grundig Florian",
+    "email": "florian.grundig@gmx.de"
+  },
+  "dependencies": {
+    "karma": "0.10.x",
+    "karma-remote-reporter": "0.1.x"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "karma-junit-reporter": "~0.1.0"
+  },
+  "contributors": []
+}

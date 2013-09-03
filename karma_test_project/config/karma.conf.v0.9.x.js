@@ -13,7 +13,7 @@ module.exports = function (config) {
         ],
 
         browsers: ['PhantomJS'],
-        reporters: ['progress', 'junit', 'coverage', 'remote'],
+        reporters: ['progress', 'junit', 'remote'],
         frameworks: ["jasmine"],
         autoWatch: false,
         singleRun: true,
@@ -27,8 +27,6 @@ module.exports = function (config) {
         },
         plugins: [
             'karma-jasmine',
-            'karma-coverage',
-            'karma-chrome-launcher',
             'karma-phantomjs-launcher',
             'karma-junit-reporter',
             'karma-remote-reporter'
