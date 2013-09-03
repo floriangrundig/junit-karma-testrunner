@@ -1,5 +1,8 @@
 #JUnit-Karma test suite runner#
 This library allows you to run a karma test suite with a java JUnit test runner.
+
+IMPORTANT: junit-karma-testrunner requires > java 7
+
 ###Prerequisites###
 To combine the javascript karma test runner with a java JUnit runner you need this library and our
 <a href="http://github.com/ImmobilienScout24/karma-remote-reporter" target="_blank">karma-remote-reporter</a>.
