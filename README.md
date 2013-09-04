@@ -2,7 +2,7 @@
 This library allows you to run a karma test suite with a java JUnit test runner.
 
 ************
-A full running demo for using the runner can be found athttps://github.com/FlorianGrundig/demo-junit-karma-testrunner
+A full running demo for using the runner can be found at https://github.com/FlorianGrundig/demo-junit-karma-testrunner
 ************
 
 
