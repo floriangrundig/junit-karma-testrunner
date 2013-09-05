@@ -11,18 +11,57 @@ import de.is24.util.karmatestrunner.browsers.*;
 
 import java.util.*;
 
+/**
+ * The TestReporter is receives the test results and other infos from the
+ * {@link de.is24.util.karmatestrunner.jetty.ResultReceiverServer} and transforms
+ * them into JUnit results (via {@link RunNotifier}).
+ */
 public class TestReporter {
 
-    private HashMap<String, Class> browsers = new HashMap<String, Class>();
+    private HashMap<String, String> browsers = new HashMap<>();
     private JSONParser parser = new JSONParser();
     private RunNotifier notifier;
+    private Class<?> testClass;
+    private Description suiteDescription;
 
+    /**
+     * @param notifier JUnit notifier for transformed test results
+     */
     TestReporter(RunNotifier notifier) {
         this.notifier = notifier;
     }
 
 
-    ContainerFactory containerFactory = new ContainerFactory(){
+    /**
+     * Receives the test results and transforms them into JUnit events.
+     *
+     * @param data test results as JSON string
+     */
+    public void handleMessage(String data) {
+        try {
+            Map message = (Map) parser.parse(data, containerFactory);
+            String message_type = (String) message.get("type");
+            if (message_type.equalsIgnoreCase("test")) {
+                reportTestResult(message);
+            } else if (message_type.equalsIgnoreCase("browsers")) {
+                setBrowsers(message);
+            } else if (message_type.equalsIgnoreCase("runComplete")) {
+                finishReportingForTestSuite();
+            } // other messages will be ignored
+        } catch (ParseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    public void setTestClass(Class<?> testClass) {
+        this.testClass = testClass;
+    }
+
+    private void finishReportingForTestSuite() {
+        notifier.fireTestFinished(suiteDescription);
+    }
+
+    private ContainerFactory containerFactory = new ContainerFactory() {
         public List creatArrayContainer() {
             return new LinkedList();
         }
@@ -33,40 +72,17 @@ public class TestReporter {
 
     };
 
-
-    public void handleMessage(String data) {
-        try {
-            Map message = (Map) parser.parse(data, containerFactory);
-            String message_type = (String) message.get("type");
-            if (message_type.equalsIgnoreCase("test")) {
-                reportTestResult(message);
-            }
-            if (message_type.equalsIgnoreCase("browsers")) {
-                setBrowsers(message);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
     private void setBrowsers(Map browsers) {
         for (int i = 0; i < ((List) browsers.get("list")).size(); i++) {
             Map browser = (Map) ((List) browsers.get("list")).get(i);
 
+            this.browsers.put(
+                    (String) browser.get("browserId"),
+                    (String) browser.get("name")
+            );
 
-            String browserName = (String) browser.get("name");
-            Class browserClass = UnknownBrowser.class;
-            if (browserName.toLowerCase(Locale.GERMAN).contains("chrome")) {
-                browserClass = Chrome.class;
-            }
-            if (browserName.toLowerCase(Locale.GERMAN).contains("phantom")) {
-                browserClass = PhantomJS.class;
-            }
-            if (browserName.toLowerCase(Locale.GERMAN).contains("firefox")) {
-                browserClass = FireFox.class;
-            }
-
-            this.browsers.put((String) browser.get("browserId"), browserClass);
+            suiteDescription = Description.createSuiteDescription(testClass);
+           notifier.fireTestStarted(suiteDescription);
         }
     }
 
@@ -80,22 +96,22 @@ public class TestReporter {
         String suite = result.get("suite").toString();
 
 
-        Description description = describeChild(browsers.get(browserId), suite + " " + label);
+        Description description = describeChild(testClass,browsers.get(browserId) + ": " + suite + " " + label);
 
         try {
-            if (skipped){
+            if (skipped) {
                 notifier.fireTestIgnored(description);
             } else {
                 notifier.fireTestStarted(description);
             }
 
-            if (!success){
+            if (!success) {
 
                 String log = result.get("log").toString();
-                    JSTestFailure failure = new JSTestFailure(description, label,
-                            "Failures: "+log);
-                    notifier.fireTestFailure(failure);
-                }
+                JSTestFailure failure = new JSTestFailure(description, label,
+                        "Failures: " + log);
+                notifier.fireTestFailure(failure);
+            }
 
         } finally {
             notifier.fireTestFinished(description);

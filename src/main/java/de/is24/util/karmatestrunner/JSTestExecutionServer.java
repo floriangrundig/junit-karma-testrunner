@@ -14,13 +14,10 @@ public class JSTestExecutionServer {
     ResultReceiverServer server;
     int port = 9000;
     String [] karma_start_cmds;
+    private Class<?> testClass;
 
     public JSTestExecutionServer(int port){
         this.port = port;
-    }
-
-    public void setKarmaStartCmd(String ... args){
-        this.karma_start_cmds = args;
     }
 
     public void beforeTests() throws Exception{
@@ -30,6 +27,7 @@ public class JSTestExecutionServer {
 
     public void runTests(RunNotifier notifier){
         TestReporter reporter = new TestReporter(notifier);
+        reporter.setTestClass(testClass);
 
         server.setTestReporter(reporter);
 
@@ -47,7 +45,15 @@ public class JSTestExecutionServer {
     }
 
     public void afterTests(){
+        // nop
+    }
 
+    public void setKarmaStartCmd(String ... args){
+        this.karma_start_cmds = args;
+    }
+
+    public void setTestClass(Class<?> testClass) {
+        this.testClass = testClass;
     }
 
     private void runKarma() throws Exception {
@@ -75,5 +81,4 @@ public class JSTestExecutionServer {
         System.out.println("Program terminated!");
 
     }
-
 }

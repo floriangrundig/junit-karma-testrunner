@@ -44,7 +44,7 @@ module.exports = function (config) {
     });
 };
 </code></pre>
-To add the remote reporter plugin add 'karma-remote-reporter' to the plugin sections and add 'remote' to the reporters section.
+To add the remote reporter plugin add 'karma-remote-reporter' to the plugin section and add 'remote' to the reporters section.
 To configure the host and port where the karma remote reporter should send the test results use the remoteReporter section.
 
 The test results will send by the remote reporter to a server which is in the java world e.g. this JUnit-karma-testrunner.
