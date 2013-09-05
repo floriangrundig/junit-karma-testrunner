@@ -181,7 +181,7 @@ public class KarmaTestSuiteRunner extends ParentRunner<String> {
 
     @Override
     protected Description describeChild(String name) {
-    return Description
+        return Description
                 .createTestDescription(this.getTestClass().getJavaClass(),
                         name);
     }

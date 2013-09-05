@@ -7,8 +7,6 @@ import org.json.simple.parser.ParseException;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
-import de.is24.util.karmatestrunner.browsers.*;
-
 import java.util.*;
 
 /**
