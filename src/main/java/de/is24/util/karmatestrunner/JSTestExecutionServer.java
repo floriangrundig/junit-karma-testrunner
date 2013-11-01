@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 public class JSTestExecutionServer {
 
     ResultReceiverServer server;
-    int port = 9000;
+    int port;
     String [] karma_start_cmds;
     private Class<?> testClass;
 

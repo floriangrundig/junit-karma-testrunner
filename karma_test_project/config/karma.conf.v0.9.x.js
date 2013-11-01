@@ -23,7 +23,7 @@ module.exports = function (config) {
         },
         remoteReporter: {
             host: 'localhost',
-            port: '9876'
+            port: '9889'
         },
         plugins: [
             'karma-jasmine',
