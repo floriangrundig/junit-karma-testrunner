@@ -1,5 +1,6 @@
 package de.is24.util.karmatestrunner.junit;
 
+import de.is24.util.karmatestrunner.ExecutionServerConfigProvider;
 import de.is24.util.karmatestrunner.JSTestExecutionServer;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -8,13 +9,13 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerScheduler;
 import org.junit.runners.model.Statement;
 
+import java.io.File;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -24,13 +25,18 @@ import java.util.List;
  * <p/>
  * <p/>
  * Use the KarmaProcessName annotation to configure the process name if it is not "karma" for linux and mac machines or "karma.cmd" for windows machines which will be detected automatically.
- * Use the KarmaProcessBuilderArgs annotation to configure how to start karma (defaults to {"karma", "start"}.
+ * <br>
+ * Use the KarmaProcessArgs annotation to configure the process name args which are comma seperated (defaults to "start").
+ * <br>
+ * Use the KarmaStartupScripts annotation to configure a list of comma seperated executable files. The first existing file will be executed to start up the karma process on your own.
+ * <br>
  * Use the KarmaConfigPath annotation to configure the path to the karma config file (defaults to "karma.conf").
+ * <br>
  * Use the KarmaRemoteServerPort annotation to configure the port of the server which receives the test results from karma (defaults to 9889).
  */
 public class KarmaTestSuiteRunner extends ParentRunner<String> {
 
-  private static final int DEFAUTL_REMOTE_SERVER_PORT = 9889;
+
 
   /**
    * Points to the karma process name. Defaults to
@@ -50,7 +56,7 @@ public class KarmaTestSuiteRunner extends ParentRunner<String> {
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.TYPE)
   @Inherited
-  public @interface KarmaProcessArg {
+  public @interface KarmaProcessArgs {
     String value();
   }
 
@@ -58,24 +64,11 @@ public class KarmaTestSuiteRunner extends ParentRunner<String> {
    * Provide a list of executable files. The first existing file will be executed all other will be ignored.
    * If this annotation is used, the annotations KarmaProcessName and KarmaProcessArg are forbidden.
    */
-  @Deprecated
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.TYPE)
   @Inherited
   public @interface KarmaStartupScripts {
-    String[] value();
-  }
-
-  /**
-   * Describes the process builder arguments to start karma. Defaults to ["karma", "start"]
-   * @deprecated use KarmaProcessName and KarmaProcessArg if auto detection work not for you.
-   */
-  @Deprecated
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.TYPE)
-  @Inherited
-  public @interface KarmaProcessBuilderArgs {
-    String[] value();
+    String value();
   }
 
   /**
@@ -116,34 +109,40 @@ public class KarmaTestSuiteRunner extends ParentRunner<String> {
   public KarmaTestSuiteRunner(Class<?> testClass) throws InitializationError {
     super(testClass);
 
-    KarmaProcessBuilderArgs karmaProcessBuilderArgsAnnotation = testClass.getAnnotation(KarmaProcessBuilderArgs.class);
-    ArrayList<String> karmaProcessBuilderArgs;
-    if (karmaProcessBuilderArgsAnnotation == null) {
-      karmaProcessBuilderArgs = new ArrayList<String>(Arrays.asList("karma", "start")); // defaults
+    ArrayList<String> karmaProcessArgs = new ArrayList();
+    ExecutionServerConfigProvider configProvider = new ExecutionServerConfigProvider(testClass);
+    ArrayList<String> additionalKarmaProcessArgs = configProvider.getKarmaProcessArgs();
+    ArrayList<String> karmaStartupScripts = configProvider.getKarmaStartupScripts();
+    String karmaProcessName = configProvider.getKarmaProcessName();
+    String karmaConfigPath = configProvider.getKarmaConfigPath();
+    int karmaRemoteServerPort = configProvider.getKarmaRemoteServerPort();
+
+    if (karmaStartupScripts.size() > 0){
+      for (String filePath : karmaStartupScripts){
+        File file = new File(filePath.trim());
+        if (file.canExecute()){
+          karmaProcessArgs.add(file.getAbsolutePath());
+          continue;
+        }
+      }
+      if (karmaProcessArgs.isEmpty()){
+        throw new IllegalArgumentException("No executable file found: " + karmaStartupScripts);
+      }
     } else {
-      karmaProcessBuilderArgs = new ArrayList<String>(Arrays.asList(karmaProcessBuilderArgsAnnotation.value()));
+        karmaProcessArgs.add(karmaProcessName);
+        karmaProcessArgs.addAll(additionalKarmaProcessArgs);
     }
 
-    KarmaConfigPath karmaConfigPathAnnotation = testClass.getAnnotation(KarmaConfigPath.class);
-    String karmaConfigPath;
-    if (karmaConfigPathAnnotation == null) {
-      karmaConfigPath = "karma.conf";
-    } else {
-      karmaConfigPath = karmaConfigPathAnnotation.value();
+    File configFile = new File(karmaConfigPath);
+    if (!configFile.canRead()){
+      throw new IllegalArgumentException("Karma config file not readable: " + karmaConfigPath);
     }
 
-    KarmaRemoteServerPort karmaRemoteServerPortAnnotation = testClass.getAnnotation(KarmaRemoteServerPort.class);
-    int karmaRemoteServerPort;
-    if (karmaRemoteServerPortAnnotation == null) {
-      karmaRemoteServerPort = DEFAUTL_REMOTE_SERVER_PORT;
-    } else {
-      karmaRemoteServerPort = karmaRemoteServerPortAnnotation.value();
-    }
 
-    karmaProcessBuilderArgs.add(karmaConfigPath);
+    karmaProcessArgs.add(configFile.getAbsolutePath());
 
     jsTestExecutionServer = new JSTestExecutionServer(karmaRemoteServerPort);
-    jsTestExecutionServer.setKarmaStartCmd((String[]) karmaProcessBuilderArgs.toArray(new String[0]));
+    jsTestExecutionServer.setKarmaStartCmd((String[]) karmaProcessArgs.toArray(new String[0]));
     jsTestExecutionServer.setTestClass(testClass);
   }
 
