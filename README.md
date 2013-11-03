@@ -33,7 +33,7 @@ module.exports = function (config) {
         },
         remoteReporter: {
             host: 'localhost',
-            port: '9876'
+            port: '9889'
         },
         plugins: [
             'karma-jasmine',
@@ -53,9 +53,7 @@ All you need is a normal java test class:
 ###JavaScriptTestSuite.java###
 <pre><code>
 @RunWith(KarmaTestSuiteRunner.class)
-@KarmaTestSuiteRunner.KarmaProcessBuilderArgs({"karma", "start"}) // you can also provide a shell script which starts karma
-@KarmaTestSuiteRunner.KarmaConfigPath("karma.conf") // use different karma configurations for e.g. to run unit or even e2e tests
-@KarmaTestSuiteRunner.KarmaRemoteServerPort(9876)
+@KarmaTestSuiteRunner.KarmaConfigPath("path.to.your.karma.conf") // use several test classes with different karma configurations for e.g. running unit or e2e tests
 public class KarmaTestSuiteRunnerBasicTestFixture {
 
     @BeforeClass
@@ -71,4 +69,24 @@ public class KarmaTestSuiteRunnerBasicTestFixture {
 </code></pre>
 With the KarmaTestSuiteRunner annotations you can configure your the server where the test results will be reported and the karma config.
 With @BeforeClass and @AfterClass you can setup and cleanup your test scenario when running e2e tests.
+
+There're several more configuration points using the annotations in KarmaTestSuiteRunner:
+de.is24.util.karmatestrunner.junit.KarmaTestSuiteRunner.KarmaProcessName -> defaults to "karma" for linux and mac os, "karma.cmd" for windows os
+
+de.is24.util.karmatestrunner.junit.KarmaTestSuiteRunner.KarmaProcessArgs -> defaults to "start"
+
+de.is24.util.karmatestrunner.junit.KarmaTestSuiteRunner.KarmaStartupScripts -> you can setup the karma environment e.g. path setup or browser bin location variables by yourself via a shell or batch script
+
+de.is24.util.karmatestrunner.junit.KarmaTestSuiteRunner.KarmaRemoteServerPort -> defaults to 9889
+
+You can overwrite all annotations by using the following system properties:
+  karma.process.name
+  karma.process.args
+  karma.startup.scripts
+  karma.remoteServerPort
+
+With the system properties you can overwrite the environment specifics to run the tests on a dev machine and a ci server without code changes...
+
+
+
 

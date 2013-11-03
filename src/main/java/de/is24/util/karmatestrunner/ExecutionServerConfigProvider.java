@@ -18,7 +18,6 @@ public class ExecutionServerConfigProvider {
   public static final String KARMA_PROCESS_NAME_SYSTEM_PROPERTY = "karma.process.name";
   public static final String KARMA_PROCESS_ARGS_SYSTEM_PROPERTY = "karma.process.args";
   public static final String KARMA_STARTUP_SCRIPTS_SYSTEM_PROPERTY = "karma.startup.scripts";
-  public static final String KARMA_CONFIG_PATH_SYSTEM_PROPERTY = "karma.config.path";
   public static final String KARMA_REMOTE_SERVER_PORT_SYSTEM_PROPERTY = "karma.remoteServerPort";
 
   public static final int DEFAULT_KARMA_REMOTE_SERVER_PORT = 9889;
@@ -67,7 +66,7 @@ public class ExecutionServerConfigProvider {
 
   public String getKarmaConfigPath() {
     KarmaConfigPath annotation = testClass.getAnnotation(KarmaConfigPath.class);
-    String resultAsString = System.getProperty(KARMA_CONFIG_PATH_SYSTEM_PROPERTY, annotation != null ? annotation.value() : "");
+    String resultAsString = annotation != null ? annotation.value() : "";
     return resultAsString.isEmpty() ? DEFAULT_KARMA_CONFIG_PATH : resultAsString;
   }
 

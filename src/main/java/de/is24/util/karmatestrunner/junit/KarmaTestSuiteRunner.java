@@ -120,9 +120,13 @@ public class KarmaTestSuiteRunner extends ParentRunner<String> {
     if (karmaStartupScripts.size() > 0){
       for (String filePath : karmaStartupScripts){
         File file = new File(filePath.trim());
-        if (file.canExecute()){
+        if (file.isFile() && file.canExecute()){
           karmaProcessArgs.add(file.getAbsolutePath());
           continue;
+        } else {
+            if (file.exists()){
+                System.err.println("File " + file.getAbsolutePath() + " is not executable");
+            }
         }
       }
       if (karmaProcessArgs.isEmpty()){
@@ -141,6 +145,7 @@ public class KarmaTestSuiteRunner extends ParentRunner<String> {
 
     karmaProcessArgs.add(configFile.getAbsolutePath());
 
+    System.out.println("Karma will be started with process builder args: "+ karmaProcessArgs.toString());
     jsTestExecutionServer = new JSTestExecutionServer(karmaRemoteServerPort);
     jsTestExecutionServer.setKarmaStartCmd((String[]) karmaProcessArgs.toArray(new String[0]));
     jsTestExecutionServer.setTestClass(testClass);

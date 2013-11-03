@@ -21,6 +21,8 @@ public class JSTestExecutionServer {
     }
 
     public void beforeTests() throws Exception{
+            System.out.println("Starting karma result receiver server on localhost:"+ port);
+
             server = new ResultReceiverServer(port);
             server.start();
     }
@@ -57,8 +59,6 @@ public class JSTestExecutionServer {
     }
 
     private void runKarma() throws Exception {
-        System.err.println(System.getenv("PATH"));
-
         Process process;
         // Get the command args and execute them, merging STDOUT and STDERR
         ProcessBuilder builder = new ProcessBuilder(karma_start_cmds);
