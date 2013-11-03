@@ -80,10 +80,15 @@ de.is24.util.karmatestrunner.junit.KarmaTestSuiteRunner.KarmaStartupScripts -> y
 de.is24.util.karmatestrunner.junit.KarmaTestSuiteRunner.KarmaRemoteServerPort -> defaults to 9889
 
 You can overwrite all annotations by using the following system properties:
+
   karma.process.name
+
   karma.process.args
+
   karma.startup.scripts
+
   karma.remoteServerPort
+
 
 With the system properties you can overwrite the environment specifics to run the tests on a dev machine and a ci server without code changes...
 
