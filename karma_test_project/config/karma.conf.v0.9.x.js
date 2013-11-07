@@ -22,8 +22,8 @@ module.exports = function (config) {
             suite: 'unit'
         },
         remoteReporter: {
-            host: 'localhost',
-            port: '9889'
+            port: '9889',
+            finishDelay : 100
         },
         plugins: [
             'karma-jasmine',
