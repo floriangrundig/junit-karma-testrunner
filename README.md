@@ -8,6 +8,14 @@ A full running demo for using the runner can be found at https://github.com/Flor
 
 IMPORTANT: junit-karma-testrunner requires > java 7
 
+###History###
+<pre>
+1.1-SNAPSHOT:
+* IMPORTANT: reinstall karma-remote-reporter to get the latest version, which fixes critical reporting errors
+* the JUnit testrunner will fail, when karma reports syntax errors
+</pre>
+
+
 ###Prerequisites###
 To combine the javascript karma test runner with a java JUnit runner you need this library and our
 <a href="http://github.com/ImmobilienScout24/karma-remote-reporter" target="_blank">karma-remote-reporter</a>.
