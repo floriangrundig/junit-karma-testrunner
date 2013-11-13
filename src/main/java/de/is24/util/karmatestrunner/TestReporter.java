@@ -45,6 +45,8 @@ public class TestReporter {
                 setBrowsers(message);
             } else if (message_type.equalsIgnoreCase("runComplete")) {
                 finishReportingForTestSuite();
+            } else if (message_type.equalsIgnoreCase("browserError")) {
+                reportBrowserError(message);
             } // other messages will be ignored
         } catch (ParseException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -82,6 +84,19 @@ public class TestReporter {
             suiteDescription = Description.createSuiteDescription(testClass);
            notifier.fireTestStarted(suiteDescription);
         }
+    }
+
+    private void reportBrowserError(Map message){
+        String browserId = (String) message.get("browserId");
+
+        Description description = describeChild(testClass,browsers.get(browserId)+ ": Browser Error" );
+        String errorMsg = message.get("error").toString();
+        JSTestFailure failure = new JSTestFailure(description, "Error",
+                "Failures: " + errorMsg);
+
+        notifier.fireTestStarted(description);
+        notifier.fireTestFailure(failure);
+        notifier.fireTestFinished(description);
     }
 
     private void reportTestResult(Map message) {
