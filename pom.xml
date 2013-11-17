@@ -4,7 +4,7 @@
     <groupId>de.is24.util</groupId>
     <artifactId>junit-karma-testrunner</artifactId>
     <packaging>jar</packaging>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
     <name>junit-karma-testrunner</name>
     <description>A junit test runner for running javascript tests with karma</description>
     <url>https://github.com/ImmobilienScout24/junit-karma-testrunner</url>
