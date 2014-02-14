@@ -147,7 +147,7 @@ public class KarmaTestSuiteRunner extends ParentRunner<String> {
 
     System.out.println("Karma will be started with process builder args: "+ karmaProcessArgs.toString());
     jsTestExecutionServer = new JSTestExecutionServer(karmaRemoteServerPort);
-    jsTestExecutionServer.setKarmaStartCmd((String[]) karmaProcessArgs.toArray(new String[0]));
+    jsTestExecutionServer.setKarmaStartCmd(karmaProcessArgs);
     jsTestExecutionServer.setTestClass(testClass);
   }
 

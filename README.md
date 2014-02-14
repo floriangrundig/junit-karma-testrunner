@@ -10,6 +10,11 @@ IMPORTANT: junit-karma-testrunner requires > java 7
 
 ###History###
 <pre>
+1.2-SNAPSHOT:
+* IMPORTANT: reinstall karma-remote-reporter to get the latest version, which fixes a bug when running multiple junit-karma-testrunner simultaneously without getting a "port already in use"-exception
+</pre>
+
+<pre>
 1.1-SNAPSHOT:
 * IMPORTANT: reinstall karma-remote-reporter to get the latest version, which fixes critical reporting errors
 * the JUnit testrunner will fail, when karma reports syntax errors
