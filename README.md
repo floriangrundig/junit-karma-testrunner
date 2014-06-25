@@ -10,8 +10,12 @@ IMPORTANT: junit-karma-testrunner requires > java 7
 
 ###History###
 <pre>
-1.2-SNAPSHOT:
-* IMPORTANT: reinstall karma-remote-reporter to get the latest version, which fixes a bug when running multiple junit-karma-testrunner simultaneously without getting a "port already in use"-exception
+1.3-snapshot:
+* added maven-shade-plugin to the package phase to build an uber-jar which includes all required dependencies
+</pre>
+<pre>
+1.2-snapshot:
+* important: reinstall karma-remote-reporter to get the latest version, which fixes a bug when running multiple junit-karma-testrunner simultaneously without getting a "port already in use"-exception
 </pre>
 
 <pre>
