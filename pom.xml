@@ -60,7 +60,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <finalName>${artifactId}-${version}-all</finalName>
+                    <finalName>${artifactId}-${version}</finalName>
                 </configuration>
             </plugin>            
             <plugin>
