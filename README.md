@@ -6,9 +6,13 @@ A full running demo for using the runner can be found at https://github.com/Flor
 ************
 
 
-IMPORTANT: junit-karma-testrunner requires > java 7
+IMPORTANT: junit-karma-testrunner requires >= java 6
 
 ###History###
+<pre>
+1.4-snapshot:
+* removed java 1.7 specific stuff to be compatible with java 1.6 
+</pre>
 <pre>
 1.3-snapshot:
 * added maven-shade-plugin to the package phase to build an uber-jar which includes all required dependencies
