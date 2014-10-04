@@ -16,7 +16,7 @@ import java.util.*;
  */
 public class TestReporter {
 
-    private HashMap<String, String> browsers = new HashMap<>();
+    private HashMap<String, String> browsers = new HashMap<String, String>();
     private JSONParser parser = new JSONParser();
     private RunNotifier notifier;
     private Class<?> testClass;

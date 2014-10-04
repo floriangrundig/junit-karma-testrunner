@@ -98,7 +98,7 @@ public class JSTestExecutionServer {
         // Get the command args and execute them, merging STDOUT and STDERR
         ProcessBuilder builder = new ProcessBuilder(karmaProcessBuilderArgs);
         builder.redirectErrorStream(true);
-        builder.redirectOutput();
+//        builder.redirectOutput();
         try {
             process = builder.start();
         } catch (IOException e) {
