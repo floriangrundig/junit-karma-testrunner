@@ -7,7 +7,7 @@
     <version>1.5-SNAPSHOT</version>
     <name>junit-karma-testrunner</name>
     <description>A junit test runner for running javascript tests with karma</description>
-    <url>https://github.com/ImmobilienScout24/junit-karma-testrunner</url>
+    <url>https://github.com/FlorianGrundig/junit-karma-testrunner</url>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -15,10 +15,6 @@
         <version>7</version>
     </parent>
 
-    <organization>
-        <name>Immobilien Scout GmbH</name>
-        <url>http://www.immobilienscout24.de</url>
-    </organization>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -29,12 +25,12 @@
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/ImmobilienScout24/junit-karma-testrunner/issues</url>
+        <url>https://github.com/FlorianGrundig/junit-karma-testrunner/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:git:https://github.com/ImmobilienScout24/junit-karma-testrunner.git</connection>
-        <developerConnection>scm:git:https://github.com/ImmobilienScout24/junit-karma-testrunner.git</developerConnection>
-        <url>https://github.com/ImmobilienScout24/junit-karma-testrunner.git</url>
+        <connection>scm:git:https://github.com/FlorianGrundig/junit-karma-testrunner.git</connection>
+        <developerConnection>scm:git:https://github.com/FlorianGrundig/junit-karma-testrunner.git</developerConnection>
+        <url>https://github.com/FlorianGrundig/junit-karma-testrunner.git</url>
     </scm>
 
     <properties>
@@ -48,21 +44,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <finalName>${artifactId}-${version}</finalName>
-                </configuration>
-            </plugin>            
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
@@ -121,36 +102,6 @@
 
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.10</version>
-                <configuration>
-                    <configLocation>checkstyle/checkstyle.xml</configLocation>
-                    <suppressionsLocation>checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
-                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>de.is24</groupId>
-                        <artifactId>qa</artifactId>
-                        <version>1.0</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.5.2</version>
-                <configuration>
-                    <xmlOutput>true</xmlOutput>
-                    <effort>Max</effort>
-                    <xmlOutputDirectory>target/site</xmlOutputDirectory>
-                    <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
-                    <onlyAnalyze>de.is24.*</onlyAnalyze>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>failsafe-maven-plugin</artifactId>
                 <version>2.4.3-alpha-1</version>
@@ -163,45 +114,8 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <locales>en</locales>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>cobertura-maven-plugin</artifactId>
-                            <version>2.4</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <version>2.6</version>
-                            <reportSets>
-                                <reportSet>
-                                    <reports>
-                                        <report>project-team</report>
-                                        <report>mailing-list</report>
-                                        <report>cim</report>
-                                        <report>issue-tracking</report>
-                                        <report>scm</report>
-                                    </reports>
-                                </reportSet>
-                            </reportSets>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-            </plugin>
+
         </plugins>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>2.1</version>
-            </extension>
-        </extensions>
     </build>
 
     <dependencies>
@@ -216,47 +130,6 @@
             <artifactId>json-simple</artifactId>
             <version>1.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>1.5.15</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>7.5.0.v20110901</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-websocket</artifactId>
-            <version>7.5.0.v20110901</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>1.8.2</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.6.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-        </dependency>
 
     </dependencies>
 
@@ -266,8 +139,6 @@
             <id>florian_grundig</id>
             <email>florian.grundig@gmx.de</email>
             <name>Florian Grundig</name>
-            <organization>Immobilien Scout GmbH</organization>
-            <organizationUrl>http://www.immobilienscout24.de</organizationUrl>
             <timezone>1</timezone>
         </developer>
     </developers>

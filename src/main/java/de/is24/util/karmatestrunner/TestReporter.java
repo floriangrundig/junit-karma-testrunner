@@ -11,7 +11,7 @@ import java.util.*;
 
 /**
  * The TestReporter is receives the test results and other infos from the
- * {@link de.is24.util.karmatestrunner.jetty.ResultReceiverServer} and transforms
+ * {@link de.is24.util.karmatestrunner.ResultReceiverServer} and transforms
  * them into JUnit results (via {@link RunNotifier}).
  */
 public class TestReporter {

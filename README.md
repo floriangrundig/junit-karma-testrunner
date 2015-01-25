@@ -10,8 +10,13 @@ IMPORTANT: junit-karma-testrunner requires >= java 6
 
 ###History###
 <pre>
+1.5-snapshot:
+* important: reinstall karma-remote-reporter to v0.2.x
+* receiving test results via raw tcp socket communication instead of websockets
+</pre>
+<pre>
 1.4-snapshot:
-* removed java 1.7 specific stuff to be compatible with java 1.6 
+* removed java 1.7 specific stuff to be compatible with java 1.6
 </pre>
 <pre>
 1.3-snapshot:

@@ -1,6 +1,6 @@
 package de.is24.util.karmatestrunner;
 
-import de.is24.util.karmatestrunner.jetty.ResultReceiverServer;
+import de.is24.util.karmatestrunner.ResultReceiverServer;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
@@ -87,7 +87,7 @@ public class JSTestExecutionServer {
             resultReceiverStarted = true;
             karmaProcessBuilderArgs.add("--remoteReporterPort=" + port);
             System.out.println("Karma result receiver server startet at port: " + port);
-        } catch (BindException e) {
+        } catch (IOException e) {
             retries--;
             tryToStartResultReceiverServer(retries);
         }
