@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "karma": "0.10.x",
-    "karma-remote-reporter": "0.1.x"
+    "karma-remote-reporter": "0.2.x"
   },
   "license": "MIT",
   "devDependencies": {

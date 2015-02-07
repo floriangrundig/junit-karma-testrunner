@@ -12,7 +12,7 @@ module.exports = function (config) {
             'unit-tests/**/*.js'
         ],
 
-        browsers: ['PhantomJS','Chrome'],
+        browsers: ['PhantomJS'],
         reporters: ['progress', 'junit', 'remote'],
         frameworks: ["jasmine"],
         autoWatch: false,
@@ -28,7 +28,6 @@ module.exports = function (config) {
         plugins: [
             'karma-jasmine',
             'karma-phantomjs-launcher',
-            'karma-chrome-launcher',
             'karma-junit-reporter',
             'karma-remote-reporter'
         ]

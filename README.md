@@ -5,13 +5,10 @@ This library allows you to run a karma test suite with a java JUnit test runner.
 A full running demo for using the runner can be found at https://github.com/FlorianGrundig/demo-junit-karma-testrunner
 ************
 
-
-IMPORTANT: junit-karma-testrunner requires >= java 6
-
 ###History###
 <pre>
 1.5-snapshot:
-* important: reinstall karma-remote-reporter to v0.2.x
+* important: reinstall node modul karma-remote-reporter to v0.2.x
 * receiving test results via raw tcp socket communication instead of websockets
 </pre>
 <pre>
