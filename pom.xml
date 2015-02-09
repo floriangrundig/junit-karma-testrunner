@@ -4,7 +4,7 @@
     <groupId>de.is24.util</groupId>
     <artifactId>junit-karma-testrunner</artifactId>
     <packaging>jar</packaging>
-    <version>1.6</version>
+    <version>1.7-SNAPSHOT</version>
     <name>junit-karma-testrunner</name>
     <description>A junit test runner for running javascript tests with karma</description>
     <url>https://github.com/FlorianGrundig/junit-karma-testrunner</url>
