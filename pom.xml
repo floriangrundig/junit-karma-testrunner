@@ -4,7 +4,7 @@
     <groupId>de.is24.util</groupId>
     <artifactId>junit-karma-testrunner</artifactId>
     <packaging>jar</packaging>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.6</version>
     <name>junit-karma-testrunner</name>
     <description>A junit test runner for running javascript tests with karma</description>
     <url>https://github.com/FlorianGrundig/junit-karma-testrunner</url>
@@ -44,6 +44,27 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.json.simple</pattern>
+                                    <shadedPattern>org.shaded.json.simple</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
